@@ -1,0 +1,185 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Elbrus holidays</title>
+		<style>
+			html {
+				font-family: 'helvetica neue', helvetica, arial, sans-serif;
+			}
+			header {
+				width: 100%;
+				/* margin-right: 1%;
+				margin-left: 1%; */
+				top: 0px;
+				left: 0px;
+				position: fixed;
+			}
+			table {
+				table-layout: fixed;
+				width: 100%;
+				margin-top: 5%;
+				border-collapse: collapse;
+				border: 0px solid black;
+			}
+			thead th:nth-child(0) {
+				width: 25%;
+			}
+			thead th:nth-child(1) {
+				width: 25%;
+			}
+			thead th:nth-child(2) {
+				width: 25%;
+			}
+			thead th:nth-child(3) {
+				width: 25%;
+			}
+			th, td {
+				padding: 20px;
+			}
+			tbody td {
+				text-align: center;
+			}
+			.nav-bar {
+				display: flex;
+				justify-content: flex-end;
+				background-color: black;
+			}
+			.nav-button-sign-in {
+				color: white;
+				border: transparent;
+				background: transparent;
+				padding: 1% 1% 1% 1%;
+				font-size: 12pt;
+				outline: none;
+			}
+			.nav-button-sign-up {
+				color: white;
+				border: transparent;
+				background: transparent;
+				padding: 1% 1% 1% 0%;
+				font-size: 12pt;
+				outline: none;
+			}
+			.add-button-container {
+				right: 1%;
+				position: fixed;
+				bottom: 1%;
+				margin-top: 1%;
+				margin-right: 1%;
+				justify-content: flex-end;
+			}
+			.add-button {
+				width: 48pt;
+				height: 48pt;
+				border: transparent;
+				background-color: transparent;
+			}
+			.add-button:focus {
+				outline: none;
+			}
+			.signin-form {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.modal-signin-form {
+				width: 400px;
+				max-width: 400px;
+				position: fixed;
+				border: 1px solid white;
+				border-radius: 10px;
+				background-color: black;
+			}
+			.signin-form-login-label , .signin-form-password-label {
+				font-weight: bold;
+				color: white;
+			}
+			.signin-form-login-container {
+				display: flex;
+				padding: 20px 0px 20px 0px;
+				flex-direction: column;
+				width: 70%;
+			}
+			.signin-form-password-container {
+				display: flex;
+				padding: 0px 0px 20px 0px;
+				flex-direction: column;
+				width: 70%;
+			}
+			.signin-form-login-label-container, .signin-form-password-label-container {
+				margin-bottom: 5px;
+			}
+			.signin-form-button-container {
+				width: 50%;
+				margin-bottom: 20px;
+				align-items: center;
+			}
+			.signin-form-button {
+				width: 100%;
+				height: 30px;
+				align-self: center;
+				font-weight: bold;
+				color: white;
+				background-color: black;
+				border: 1px solid white;
+				border-radius: 10px;
+			}
+			.signin-form-button:focus {
+				outline: none;
+			}
+			input {
+				height: 25px;
+			}
+		}
+		</style>
+	</head>
+	<body>
+		<header>
+			<nav class="nav-bar">
+				<button class="nav-button-sign-in">LOG IN</button>
+				<button class="nav-button-sign-up">SIGN UP</button>
+			</nav>
+		</header>
+		<table>
+			<tr>
+				<th>NAME</th>
+				<th>ADDED BY</th>
+				<th>DATE</th>
+				<th>LIKES</th>
+			</tr>
+			<tr>
+				<td>Nocow - Soder</td>
+				<td>kapustaprusta</td>
+				<td>16 Jan 2021 11:35 PM</td>
+				<td>10</td>
+			</tr>
+		</table>
+		<div class="add-button-container">
+			<button class="add-button">
+				<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+					<path d="m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm112 277.332031h-90.667969v90.667969c0 11.777344-9.554687 21.332031-21.332031 21.332031s-21.332031-9.554687-21.332031-21.332031v-90.667969h-90.667969c-11.777344 0-21.332031-9.554687-21.332031-21.332031s9.554687-21.332031 21.332031-21.332031h90.667969v-90.667969c0-11.777344 9.554687-21.332031 21.332031-21.332031s21.332031 9.554687 21.332031 21.332031v90.667969h90.667969c11.777344 0 21.332031 9.554687 21.332031 21.332031s-9.554687 21.332031-21.332031 21.332031zm0 0"/>
+				</svg>
+			</button>
+		</div>
+		<div class="modal-signin-form">
+			<div class="signin-form">
+				<div class="signin-form-login-container">
+					<div class="signin-form-login-label-container">
+						<label class="signin-form-login-label" for="login">LOGIN:<label></label>
+					</div>
+					<input type="text">
+				</div>
+				<div class="signin-form-password-container">
+					<div class="signin-form-password-label-container">
+						<label class="signin-form-password-label" for="password">PASSWORD:<label>
+					</div>
+					<input type="password">
+				</div>
+				<div class="signin-form-button-container">
+					<button class="signin-form-button">LOG IN</button>
+				</div>
+			</div>
+		</div>
+		<div id="overlay"></div>
+	</body>
+</html>

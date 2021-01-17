@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/kapustaprusta/elbrus/v2/internal/app/elbrus"
+)
 
 func main() {
-	fmt.Println("elbrus")
+	elbrus.Start(elbrus.NewConfig())
 }

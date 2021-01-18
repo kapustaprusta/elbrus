@@ -2,6 +2,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Elbrus holidays</title>
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 		<style>
 			html {
 				font-family: 'helvetica neue', helvetica, arial, sans-serif;
@@ -42,13 +43,14 @@
 				justify-content: flex-end;
 				background-color: black;
 			}
-			.nav-button-sign-in {
+			.nav-button-log-in {
 				color: white;
 				border: transparent;
 				background: transparent;
 				padding: 1% 0% 1% 1%;
 				font-size: 12pt;
 				outline: none;
+				cursor: pointer;
 			}
 			.nav-button-sign-up {
 				color: white;
@@ -57,6 +59,7 @@
 				padding: 1% 1% 1% 1%;
 				font-size: 12pt;
 				outline: none;
+				cursor: pointer;
 			}
 			.add-button-container {
 				right: 1%;
@@ -71,51 +74,81 @@
 				height: 48pt;
 				border: transparent;
 				background-color: transparent;
+				cursor: pointer;
 			}
 			.add-button:focus {
 				outline: none;
 			}
-			.signin-form {
+			.login-form,
+			.signup-form,
+			.add-track-form {
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 			}
-			.modal-signin-form {
+			.login-modal,
+			.signup-modal,
+			.add-track-modal {
 				width: 400px;
 				max-width: 400px;
 				position: fixed;
+				transition: 200ms ease-in-out;
 				border: 1px solid white;
 				border-radius: 10px;
 				background-color: black;
 				left: 50%;
 				top: 50%;
-				transform: translate(-50%, -50%);
+				transform: translate(-50%, -50%) scale(0);
+				z-index: 10;
 			}
-			.signin-form-login-label , .signin-form-password-label {
+			.login-modal.active,
+			.signup-modal.active,
+			.add-track-modal.active {
+				transform: translate(-50%, -50%) scale(1);
+			}
+			.login-form-login-label ,
+			.login-form-password-label,
+			.signup-form-login-label,
+			.signup-form-password-label,
+			.add-track-form-artist-label,
+			.add-track-form-track-label {
 				font-weight: bold;
 				color: white;
 			}
-			.signin-form-login-container {
+			.login-form-login-container,
+			.signup-form-login-container,
+			.add-track-form-arist-container {
 				display: flex;
 				padding: 20px 0px 20px 0px;
 				flex-direction: column;
 				width: 70%;
 			}
-			.signin-form-password-container {
+			.login-form-password-container,
+			.signup-form-password-container,
+			.add-track-form-track-container {
 				display: flex;
 				padding: 0px 0px 20px 0px;
 				flex-direction: column;
 				width: 70%;
 			}
-			.signin-form-login-label-container, .signin-form-password-label-container {
+			.login-form-login-label-container,
+			.login-form-password-label-container,
+			.signup-form-login-label-container,
+			.signup-form-password-label-container,
+			.add-track-form-artist-label-container,
+			.add-track-form-track-label-container {
 				margin-bottom: 5px;
 			}
-			.signin-form-button-container {
+			.login-form-button-container,
+			.signup-form-button-container,
+			.add-track-form-button-container {
 				width: 50%;
 				margin-bottom: 20px;
 				align-items: center;
 			}
-			.signin-form-button {
+			.login-form-button,
+			.signup-form-button,
+			.add-track-form-button {
 				width: 100%;
 				height: 30px;
 				align-self: center;
@@ -124,21 +157,157 @@
 				background-color: black;
 				border: 1px solid white;
 				border-radius: 10px;
+				cursor: pointer;
 			}
-			.signin-form-button:focus {
+			.login-form-close-button,
+			.signup-form-close-button,
+			.add-track-form-close-button {
+				font-weight: bold;
+				color: white;
+				text-align: left;
+				font-size: 1.5rem;
+				border: transparent;
+				background: transparent;
+				cursor: pointer;
+				margin-right: 0px;
+				padding: 0;
+			}
+			.login-form-close-button:focus,
+			.signup-form-close-button:focus,
+			.add-track-form-close-button:focus {
+				outline: none;
+			}
+			.login-form-button:focus,
+			.signup-form-button:focus,
+			.add-track-form-button:focus {
 				outline: none;
 			}
 			input {
 				height: 25px;
 			}
+			#overlay {
+				position: fixed;
+				opacity: 0;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				transition: 200ms ease-in-out;
+				background-color: rgba(0, 0, 0, 0.5);
+				pointer-events: none;
+			}
+			#overlay.active {
+				opacity: 1;
+				pointer-events: all;
+			}
+			.login-form-close-button-container,
+			.signup-form-close-button-container,
+			.add-track-form-close-button-container {
+				width: 100%;
+				display: flex;
+				justify-content: flex-end;
+				padding: 10px 50px 0 0;
+			}
 		}
 		</style>
+		<script type="text/javascript">
+			window.onload = function() {
+				const overlay = document.getElementById('overlay')
+
+				const openLogInFormButton = document.querySelectorAll('[data-login-form-modal-target]')
+				const closeLogInFormButton = document.querySelectorAll('[data-login-form-close-button]')
+
+				const openSignUpFormButton = document.querySelectorAll('[data-signup-form-modal-target]')
+				const closeSignUpFormButton = document.querySelectorAll('[data-signup-form-close-button]')
+
+				const openAddTrackFormButton = document.querySelectorAll('[data-add-track-form-modal-target]')
+				const closeAddTrackFormButton = document.querySelectorAll('[data-add-track-form-close-button]')
+
+				overlay.addEventListener('click', () => {
+					modals = document.querySelectorAll("#login-modal.active")
+					modals.forEach(modal => {
+						closeModal(modal)
+					})
+
+					modals = document.querySelectorAll("#signup-modal.active")
+					modals.forEach(modal => {
+						closeModal(modal)
+					})
+
+					modals = document.querySelectorAll("#add-track-modal.active")
+					modals.forEach(modal => {
+						closeModal(modal)
+					})
+				})
+
+				openLogInFormButton.forEach(button => {
+					button.addEventListener('click', () => {
+						const modal = document.querySelector(button.dataset.loginFormModalTarget)
+						console.info(modal)
+						openModal(modal)
+					})
+				})
+
+				closeLogInFormButton.forEach(button => {
+					button.addEventListener('click', () => {
+						const modal = button.closest('#login-modal')
+						closeModal(modal)
+					})
+				})
+
+				openSignUpFormButton.forEach(button => {
+					button.addEventListener('click', () => {
+						const modal = document.querySelector(button.dataset.signupFormModalTarget)
+						openModal(modal)
+					})
+				})
+
+				closeSignUpFormButton.forEach(button => {
+					button.addEventListener('click', () => {
+						const modal = button.closest('#signup-modal')
+						closeModal(modal)
+					})
+				})
+
+				openAddTrackFormButton.forEach(button => {
+					button.addEventListener('click', () => {
+						const modal = document.querySelector(button.dataset.addTrackFormModalTarget)
+						openModal(modal)
+					})
+				})
+
+				closeAddTrackFormButton.forEach(button => {
+					button.addEventListener('click', () => {
+						const modal = button.closest('#add-track-modal')
+						closeModal(modal)
+					})
+				})
+
+				function openModal(modal) {
+					if (modal == null) {
+						return
+					}
+
+					modal.classList.add('active')
+					overlay.classList.add('active')
+				}
+
+				function closeModal(modal) {
+					if (modal == null) {
+						return
+					}
+
+					modal.classList.remove('active')
+					overlay.classList.remove('active')
+				}
+			}
+		</script>
 	</head>
 	<body>
 		<header>
 			<nav class="nav-bar">
-				<button class="nav-button-sign-in">LOG IN</button>
-				<button class="nav-button-sign-up">SIGN UP</button>
+				<button data-login-form-modal-target="#login-modal" class="nav-button-log-in">LOG IN</button>
+				<button data-signup-form-modal-target="#signup-modal" class="nav-button-sign-up">SIGN UP</button>
 			</nav>
 		</header>
 		<table>
@@ -156,28 +325,81 @@
 			</tr>
 		</table>
 		<div class="add-button-container">
-			<button class="add-button">
+			<button data-add-track-form-modal-target="#add-track-modal" class="add-button">
 				<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
 					<path d="m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm112 277.332031h-90.667969v90.667969c0 11.777344-9.554687 21.332031-21.332031 21.332031s-21.332031-9.554687-21.332031-21.332031v-90.667969h-90.667969c-11.777344 0-21.332031-9.554687-21.332031-21.332031s9.554687-21.332031 21.332031-21.332031h90.667969v-90.667969c0-11.777344 9.554687-21.332031 21.332031-21.332031s21.332031 9.554687 21.332031 21.332031v90.667969h90.667969c11.777344 0 21.332031 9.554687 21.332031 21.332031s-9.554687 21.332031-21.332031 21.332031zm0 0"/>
 				</svg>
 			</button>
 		</div>
-		<div class="modal-signin-form">
-			<div class="signin-form">
-				<div class="signin-form-login-container">
-					<div class="signin-form-login-label-container">
-						<label class="signin-form-login-label" for="login">LOGIN:<label></label>
+		<div class="login-modal" id="login-modal">
+			<div class="login-form">
+				<div class="login-form-close-button-container">
+					<button data-login-form-close-button class="login-form-close-button">&times;</button>
+				</div>
+				<div class="login-form-login-container">
+					<div class="login-form-login-label-container">
+						<label class="login-form-login-label" for="login">LOGIN:</label>
 					</div>
 					<input type="text">
 				</div>
-				<div class="signin-form-password-container">
-					<div class="signin-form-password-label-container">
-						<label class="signin-form-password-label" for="password">PASSWORD:<label>
+				<div class="login-form-password-container">
+					<div class="login-form-password-label-container">
+						<label class="login-form-password-label" for="password">PASSWORD:<label>
 					</div>
 					<input type="password">
 				</div>
-				<div class="signin-form-button-container">
-					<button class="signin-form-button">LOG IN</button>
+				<div class="login-form-button-container">
+					<button class="login-form-button">LOG IN</button>
+				</div>
+			</div>
+		</div>
+		<div class="signup-modal" id="signup-modal">
+			<div class="signup-form">
+				<div class="signup-form-close-button-container">
+					<button data-signup-form-close-button class="signup-form-close-button">&times;</button>
+				</div>
+				<div class="signup-form-login-container">
+					<div class="signup-form-login-label-container">
+						<label class="signup-form-login-label" for="login">LOGIN:</label>
+					</div>
+					<input type="text">
+				</div>
+				<div class="signup-form-password-container">
+					<div class="signup-form-password-label-container">
+						<label class="signup-form-password-label" for="password">PASSWORD:<label>
+					</div>
+					<input type="password">
+				</div>
+				<div class="signup-form-password-container">
+					<div class="signup-form-password-label-container">
+						<label class="signup-form-password-label" for="password">CONFIRM PASSWORD:<label>
+					</div>
+					<input type="password">
+				</div>
+				<div class="signup-form-button-container">
+					<button class="signup-form-button">SIGN UP</button>
+				</div>
+			</div>
+		</div>
+		<div class="add-track-modal" id="add-track-modal">
+			<div class="add-track-form">
+				<div class="add-track-form-close-button-container">
+					<button data-add-track-form-close-button class="add-track-form-close-button">&times;</button>
+				</div>
+				<div class="add-track-form-arist-container">
+					<div class="add-track-form-artist-label-container">
+						<label class="add-track-form-artist-label" for="artist">ARTIST:</label>
+					</div>
+					<input type="text">
+				</div>
+				<div class="add-track-form-track-container">
+					<div class="add-track-form-track-label-container">
+						<label class="add-track-form-track-label" for="name">TRACK:<label>
+					</div>
+					<input type="text">
+				</div>
+				<div class="add-track-form-button-container">
+					<button class="add-track-form-button">ADD</button>
 				</div>
 			</div>
 		</div>

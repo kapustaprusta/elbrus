@@ -3,6 +3,7 @@ package elbrus
 import (
 	"io/ioutil"
 	"net/http"
+	"text/template"
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
@@ -11,6 +12,13 @@ import (
 type server struct {
 	router *mux.Router
 	logger *logrus.Logger
+}
+
+type track struct {
+	name    string
+	addedBy string
+	date    string
+	likes   int
 }
 
 func newServer() *server {
@@ -30,18 +38,19 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) configure() {
 	s.router.HandleFunc("/", s.handleMain()).Methods("GET")
-	s.router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("/home/vniksihov/src/golang/elbrus/web/static"))))
 }
 
 func (s *server) handleMain() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		mainPageRaw, err := ioutil.ReadFile("/home/vniksihov/src/golang/elbrus/web/template/index.html")
+		mainPageRawTmpl, err := ioutil.ReadFile("/home/vniksihov/src/golang/elbrus/web/template/index.html")
 		if err != nil {
 			s.logger.Errorln(err)
 
 			return
 		}
 
-		w.Write(mainPageRaw)
+		mainPageTmpl := string(mainPageRawTmpl)
+		parsedMainPageTmpl := template.Must(template.New("tmpl").Parse(mainPageTmpl))
+		parsedMainPageTmpl.Execute(w, []track{})
 	}
 }

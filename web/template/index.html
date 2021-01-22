@@ -321,12 +321,14 @@
 				<th>DATE</th>
 				<th>LIKES</th>
 			</tr>
+			{{range $val := .}}
 			<tr>
-				<td>Nocow - Soder</td>
-				<td>kapustaprusta</td>
-				<td>16 Jan 2021 11:35 PM</td>
-				<td>10</td>
+				<td>{{$val.name}}</td>
+				<td>{{$val.addedBy}}</td>
+				<td>{{$val.date}}</td>
+				<td>{{$val.likes}}</td>
 			</tr>
+			{{end}}
 		</table>
 		<div class="add-button-container">
 			<button data-add-track-form-modal-target="#add-track-modal" class="add-button">+</button>
